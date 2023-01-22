@@ -75,6 +75,7 @@ provider "kubectl" {
 # kubernetes deployment
 #################################
 resource "kubernetes_deployment_v1" "this" {
+    depends_on = [aws_db_instance.registration_app_db]
   metadata {
     name = "registration-app"
     labels = {
@@ -132,6 +133,7 @@ resource "kubernetes_deployment_v1" "this" {
 #################################
 
 resource "kubernetes_service_v1" "alb_service" {
+    depends_on = [aws_db_instance.registration_app_db]
   metadata {
     name = "registration-app-nlb-service"
     annotations = {
@@ -140,7 +142,7 @@ resource "kubernetes_service_v1" "alb_service" {
   }
   spec {
     selector = {
-      app = "registration-app"
+      app = kubernetes_deployment_v1.this.spec.0.selector.0.match_labels.app
     }
     port {
       name        = "http"
@@ -156,12 +158,13 @@ resource "kubernetes_service_v1" "alb_service" {
 #################################
 
 resource "kubernetes_service_v1" "nodeport_service" {
+    depends_on = [aws_db_instance.registration_app_db]  
   metadata {
     name = "registration-app-service"
   }
   spec {
     selector = {
-      app = "registration-app"
+      app = kubernetes_deployment_v1.this.spec.0.selector.0.match_labels.app
     }
 
 
