@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registration-app
+  labels:
+    app: registration-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: registration-app
+  template:
+    metadata:
+      labels:
+        app: registration-app
+    spec:
+      containers:
+      - name: registration-app
+        image: 735972722491.dkr.ecr.us-east-1.amazonaws.com/ci-cd-demo-kojitechs-webapp:0bd06701b2
+        ports:
+        - containerPort: 8080
+        env: 
+          - name: DB_HOSTNAME
+            value: "database-1.cd1a837ihpxk.us-east-1.rds.amazonaws.com"
+          - name: DB_PORT
+            value: "3306"
+          - name: DB_NAME
+            value: "webappdb"
+          - name: DB_USERNAME
+            value: "webappdb"
+          - name: DB_PASSWORD
+            value: "password"      
