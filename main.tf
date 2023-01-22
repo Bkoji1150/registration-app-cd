@@ -159,8 +159,6 @@ resource "kubernetes_service_v1" "nodeport_service" {
   metadata {
     name = "registration-app-service"
   }
-
-
   spec {
     selector = {
       app = "registration-app"
